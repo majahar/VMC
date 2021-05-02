@@ -1,0 +1,164 @@
+<div class="page-container mt-1 hideTabDiv"  >
+    <div class="resulttab-row"> 
+        <div class="col py-3">
+          <h2 class="top-heading">Manage Result </h2>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-xs-12 alert alert-success" ng-show="successMessage">
+        <strong>Student details updated Successfully</strong>
+</div>
+<div class="col-lg-12 col-sm-12 col-xs-12 alert alert-success" ng-show="deleteBatchSuccessMessage">
+    <strong> Batch Deleteed Successfully</strong>
+</div>
+ <!-- {{resultForm}} -->
+<!--  {{centerList}}
+ --> 
+<div class="row"
+      style="display: flex; flex-wrap: wrap;padding-left: 20px;padding-right:20px">
+
+            <div class="col-sm-3 p-15" style="text-align: start;"
+            ng-repeat="act in userActivity.activity" >
+            <input type="radio" ng-model="$parent.storeDefault" ng-click="showDesiredFields(act.id);" value="{{act.id}}" name="isDefault_group"  ng-checked="(act.id == storeDefault)"> {{act.name}}
+
+            </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+        <div class="col-md-5" style=" padding: 2px;margin-top:14px;" >
+            <h4>Select Batch</h4>
+        </div>
+        <div class="col-md-7" style=" padding: 2px;">
+            <select ng-model="resultForm.resultBatchId" style="min-height:40px;margin-top: 5px;"
+                class="input-border form-control input-hg" ng-change="getNatResultByBatch(resultForm.resultBatchId);">
+                <option value="">Select</option>
+                <option ng-repeat="x in testList" value="{{x.id}}">{{x.natResultName}}</option>
+            </select>
+
+        </div>
+    </div>
+    <div class="col-md-6" ng-show="storeDefault==3 ? false : true">
+        <div class="col-md-5" style=" padding: 2px;margin-top:14px;" >
+            <h4>Select Tab Access</h4>
+        </div>
+        <div class="col-md-7" style=" padding: 2px;">
+            <select ng-model="resultForm.tabAccess" style="min-height:40px;margin-top: 5px;"
+                class="input-border form-control input-hg">
+                <option value="">Select</option>
+                <option ng-repeat="x in resultViewList" value="{{x.id}}">{{x.name}}</option>
+            </select>
+
+        </div>
+    </div>
+    <!-- <div class="col-md-6" ng-show="storeDefault==2 ? true : false">
+        <div class="col-md-5" style=" padding: 2px;margin-top:14px;;" >
+            <h4>Skip Center</h4>
+        </div>
+        <div class="col-md-7" style=" padding: 2px;">
+            <select ng-model="resultForm.vmcCenter" style="height:200px;margin-top: 5px;"
+                class="input-border form-control input-hg" multiple>
+                <option ng-repeat="x in centerList" value="{{x.centreCode}}">{{x.centreName}}</option>
+            </select>
+    
+        </div>
+    </div> -->
+    <div class="col-md-6"  ng-show="storeDefault==2 ? true : false" style="margin-top:40px">
+            <div class="col-md-5" style=" padding: 2px;margin-top:14px;;" >
+                <h4>Skip Center</h4>
+            </div>
+            <div class="col-md-7" style=" padding: 2px;">
+                   <!--  <div style="font-weight: bold;">Get Selected Country</div> -->
+                    <!-- <span data-ng-repeat="country in SelectedCountries">
+                            <label>{{country.name}}</label>
+                            
+                        </span> -->
+                   
+                    <multiselect-dropdown model="SelectedCenters " options="centerListDetail "></multiselect-dropdown>
+        
+            </div>
+
+            
+        </div>
+        <div class="col-md-6"  ng-show="storeDefault==2 ? true : false" style="margin-top:40px">
+            <div class="col-md-5"  >
+                    <h4>Selected Centers :</h4>
+            </div>
+            <span data-ng-repeat="center in SelectedCenters">
+                <label for="">{{center.name}} <span ng-if="!$last">,</span></label>
+            </span>
+            <!-- <div data-ng-repeat="country in SelectedCountries">
+                <ul>
+                    <li>{{country.name}}</li>
+                </ul>
+            </div> -->
+
+            
+        </div>
+    
+  </div>
+  <div style="overflow:auto;" class="enrollment-box-prev-next-btn m-t-20">
+    <div style="float:right;" ng-show="storeDefault!=3 ? true : false">
+
+        <button type="button" class=" btn-primary" id="nextBtn"
+            ng-click="submitClicked()">Submit</button>
+    </div>
+    <div style="float:right;" ng-show="storeDefault==3 ? true : false">
+
+        <button type="button" style="width: 91px;height: 38px;" class="btn-danger" 
+            ng-click="areYouSureWantToDeleteBatch()">Delete</button>
+    </div>
+</div>
+  <!-- <br>{{storeDefault}}
+    <br>{{userActivity.activity}}
+ -->
+
+      </div>
+      
+
+      <div id="batchDeleteConfirmationPopup" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg m-t-70">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header promotion-head text-center">
+                    <button type="button" class="close" data-dismiss="modal"
+                        ng-click="hideBatchDialog()">&times;</button>
+                    <h3 class="modal-title"> Warning! </h3>
+                </div>
+                <div class="modal-body head_bottom">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="padding-4-20">
+                                <form name="editSectionFrm" novalidate>
+                                                <div class="col-xs-12 text-center">
+                                                        <div class="padding-4-20">
+                                                  <span class="padding-8-60 mobilebtnBlock" >Are You sure want to delete this Batch?</span>
+                                                  </div>
+                                                </div>
+                                        <div class="col-xs-12 text-center" style="
+                                        margin-top: 16px;">
+                                            <button class="btn btn-primary padding-8-60 mobilebtnBlock" class="close"
+                                                data-dismiss="modal"
+                                                ng-click="hideBatchDialog()">close</button>
+                                            <button class="btn btn-primary padding-8-60 mobilebtnBlock" class="close"
+                                                data-dismiss="modal" ng-click="deleteBatch()">Proceed</button>
+                                        </div>
+                                    
+    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <style>
+    .panel-body {
+    overflow: scroll;
+    height: 100px;
+    }
+
+    </style>
